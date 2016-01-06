@@ -12,70 +12,77 @@ public class FirstScaneController : MonoBehaviour {
 
     //Size from DB
     float A, B, X, Y;
+    bool flag = false, ThreadFlag=false, unThreadFlag = false;
     //End
-
+    
+    //Button index
+    int btnIndex;
+    //
+    
 	// Use this for initialization
 	void Start () {
-	
+        InputField_UserID.onEndEdit.AddListener(UserID_Listener);
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+        if (ThreadFlag && unThreadFlag)
+        {
+            SaveData(btnIndex);
+            Application.LoadLevel(1);
+        }
 
 	}
 
+    private void UserID_Listener(string arg)
+    {
+        
+    }
     public void btn_Version_Click(int Version)
     {
-       
-        if (InputField_UserID.text !="")
+      
+        if (InputField_UserID.text != "")
         {
             ParseQuery<ParseObject> query = ParseObject.GetQuery("TestObject");
-            List<string> User_ID_List = new List<string>();
-            query.FindAsync().ContinueWith(t =>             
+           query.FindAsync().ContinueWith(t =>
             {
-                IEnumerable <ParseObject> result = t.Result;    
+                IEnumerable<ParseObject> result = t.Result;
                 foreach (ParseObject parseObject in result)
                 {
-                    User_ID_List.Add(parseObject.Get<string>("User_ID"));      
+                    if (parseObject.Get<string>("User_ID") == InputField_UserID.text)
+                    {
+                        A = parseObject.Get<float>("A");
+                        B = parseObject.Get<float>("B");
+                        X = parseObject.Get<float>("X");
+                        Y = parseObject.Get<float>("Y");
+                        flag = true;
+                        Debug.Log(A);
+                    }
                 }
 
-                if (!User_ID_List.Contains(InputField_UserID.text))
+                if (!flag)
                 {
                     ParseObject testObject = new ParseObject("TestObject");  // Если объекта нет в базе , добавляем его
                     testObject["User_ID"] = InputField_UserID.text;          // и задаем ему параментры размера фигур
                     testObject["A"] = 1;
-                    testObject["B"] = 1; 
+                    testObject["B"] = 1;
                     testObject["X"] = 1;
                     testObject["Y"] = 1;
                     testObject.SaveAsync();
-                    Debug.Log("Successful");
+                    A = 1;
+                    B = 1;
+                    X = 1;
+                    Y = 1;
+                    Debug.Log("Successful_ELSE");
                 }
-
-               
+                
+                ThreadFlag = true;
             });
-            GetDataFromTable();
-           
-            Application.LoadLevel(1);
-        }      
-    }
-    private void GetDataFromTable()
-    {
-        var query = new ParseQuery<ParseObject>("TestObject").WhereEqualTo("User_ID", InputField_UserID.text);
-        query.FindAsync().ContinueWith(t =>
-        {
-            IEnumerable<ParseObject> result = t.Result;
-            foreach (ParseObject parseObject in result)
-            {
-                A = parseObject.Get<float>("A");
-                B = parseObject.Get<float>("B");
-                X = parseObject.Get<float>("X");
-                Y = parseObject.Get<float>("Y");
-            }
-        });
 
-       
+           btnIndex = Version;
+           unThreadFlag = true;
+        }      
     }
 
     private void SaveData(int Version)

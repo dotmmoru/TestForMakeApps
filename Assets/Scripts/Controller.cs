@@ -13,6 +13,10 @@ public class Controller : MonoBehaviour {
     string User_ID;
     // End
 
+    //Size from DB
+    float A, B, X, Y;
+    //End
+
     //Public UI elements 
     public InputField InputField_A, InputField_B;
     public Slider Slider_X, Slider_Y;
@@ -27,7 +31,11 @@ public class Controller : MonoBehaviour {
 
         Version = PlayerPrefs.GetInt("Version");
         User_ID = PlayerPrefs.GetString("User_ID");
-
+        A=PlayerPrefs.GetFloat("A");
+        B=PlayerPrefs.GetFloat("B");
+        X= PlayerPrefs.GetFloat("X");
+        Y = PlayerPrefs.GetFloat("Y");
+        Debug.Log(Version.ToString());
         ChoseState();
      
         //Create listener for  input field
@@ -50,13 +58,6 @@ public class Controller : MonoBehaviour {
     //
     private void ChoseState() 
     {
-        CubeScale(Cube_A, PlayerPrefs.GetFloat("A"));
-        CubeScale(Cube_B, PlayerPrefs.GetFloat("B"));
-        CubeScale(Cube_X, PlayerPrefs.GetFloat("X"));
-        CubeScale(Cube_Y, PlayerPrefs.GetFloat("Y"));
-
-
-
         switch (Version)
         {
             case 1: 
@@ -88,6 +89,10 @@ public class Controller : MonoBehaviour {
                     Cube_Y.SetActive(true);
                     } break;
         }
+        CubeScale(Cube_A, PlayerPrefs.GetFloat("A"));
+        CubeScale(Cube_B, PlayerPrefs.GetFloat("B"));
+        CubeScale(Cube_X, PlayerPrefs.GetFloat("X"));
+        CubeScale(Cube_Y, PlayerPrefs.GetFloat("Y"));
     }
     //
     //End
@@ -139,9 +144,17 @@ public class Controller : MonoBehaviour {
     //
     private void CubeScale(GameObject Cube, float Size)
     {
+        if (Cube.active)
         Cube.transform.localScale = new Vector3(Size, Size, Size);
     }
+    //
+    //End
+    //
 
+    public void bntBack_Click()
+    {
+        Application.LoadLevel(0);
+    }
 
 
     //
