@@ -25,19 +25,14 @@ public class Controller : MonoBehaviour {
 
 	void Start () {
 
-        GetDataFromParse();
-       
-       /* ParseObject testObject = new ParseObject("TestObject");
-        testObject["foo"] = "bar";
-        testObject.SaveAsync();*/
-
         Version = PlayerPrefs.GetInt("Version");
         User_ID = PlayerPrefs.GetString("User_ID");
-        ChoseState();
 
+        ChoseState();
+     
         //Create listener for  input field
-        InputField_A.onValueChange.AddListener(txt_A_Listener);
-        InputField_B.onValueChange.AddListener(txt_B_Listener);
+        InputField_A.onEndEdit.AddListener(txt_A_Listener);
+        InputField_B.onEndEdit.AddListener(txt_B_Listener);
         //Create listener for slider
         Slider_X.onValueChanged.AddListener(Slider_X_Listener);
         Slider_Y.onValueChanged.AddListener(Slider_Y_Listener);
@@ -55,6 +50,13 @@ public class Controller : MonoBehaviour {
     //
     private void ChoseState() 
     {
+        CubeScale(Cube_A, PlayerPrefs.GetFloat("A"));
+        CubeScale(Cube_B, PlayerPrefs.GetFloat("B"));
+        CubeScale(Cube_X, PlayerPrefs.GetFloat("X"));
+        CubeScale(Cube_Y, PlayerPrefs.GetFloat("Y"));
+
+
+
         switch (Version)
         {
             case 1: 
@@ -100,7 +102,10 @@ public class Controller : MonoBehaviour {
         {
             float number = Convert.ToSingle(arg);
             if (number >= 0.1 && number <= 2)
-                Cube_A.transform.localScale = new Vector3(number, number, number);
+            {
+                CubeScale(Cube_A, number);
+                UpdateDataInTable("A",number);
+            }
         }
     }
     private void txt_B_Listener(string arg)
@@ -109,26 +114,40 @@ public class Controller : MonoBehaviour {
         {
             float number = Convert.ToSingle(arg);
             if (number >= 0.1 && number <= 2)
-                Cube_B.transform.localScale = new Vector3(number, number, number);
+            {
+                CubeScale(Cube_B, number);
+                UpdateDataInTable("B", number);
+            }
         }
     }
     private void Slider_X_Listener(float arg)
     {
-        Cube_X.transform.localScale = new Vector3(arg, arg, arg);
+        CubeScale(Cube_X, arg);
+        UpdateDataInTable("X", arg);
     }
     private void Slider_Y_Listener(float arg)
     {
-        Cube_Y.transform.localScale = new Vector3(arg, arg, arg);
+        CubeScale(Cube_Y, arg);
+        UpdateDataInTable("Y", arg);
     }
     //
     //End
     //
 
     //
-    //Get&Update Data in Parse
+    //Change Cube Scale
     //
+    private void CubeScale(GameObject Cube, float Size)
+    {
+        Cube.transform.localScale = new Vector3(Size, Size, Size);
+    }
 
-    private void GetDataFromParse()
+
+
+    //
+    //Update Data in Parse
+    //
+    private void UpdateDataInTable(string NameInTable, float ValueInTable)
     {
 
         var query = new ParseQuery<ParseObject>("TestObject")
@@ -140,7 +159,7 @@ public class Controller : MonoBehaviour {
             IEnumerator<ParseObject> enumerator = tokens.GetEnumerator();
             enumerator.MoveNext();
             var token = enumerator.Current;
-            token["A"] = 20;
+            token[NameInTable] = ValueInTable;
             return token.SaveAsync();
         }).Unwrap().ContinueWith(t =>
         {

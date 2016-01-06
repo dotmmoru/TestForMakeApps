@@ -10,6 +10,10 @@ public class FirstScaneController : MonoBehaviour {
 
     public InputField InputField_UserID;
 
+    //Size from DB
+    float A, B, X, Y;
+    //End
+
 	// Use this for initialization
 	void Start () {
 	
@@ -50,17 +54,40 @@ public class FirstScaneController : MonoBehaviour {
                 }
 
                
-            }); 
+            });
+            GetDataFromTable();
            
+            Application.LoadLevel(1);
+        }      
+    }
+    private void GetDataFromTable()
+    {
+        var query = new ParseQuery<ParseObject>("TestObject").WhereEqualTo("User_ID", InputField_UserID.text);
+        query.FindAsync().ContinueWith(t =>
+        {
+            IEnumerable<ParseObject> result = t.Result;
+            foreach (ParseObject parseObject in result)
+            {
+                A = parseObject.Get<float>("A");
+                B = parseObject.Get<float>("B");
+                X = parseObject.Get<float>("X");
+                Y = parseObject.Get<float>("Y");
+            }
+        });
 
-            PlayerPrefs.SetString("User_ID", InputField_UserID.text); // Передаю во 2ю сцену Айдишник изера 
-            PlayerPrefs.SetInt("Version", Version);// и номер кнопки которую нажали
-            // ну на самом деле я слегка недопонял тз :) сделаю как понял сам 
-            //Application.LoadLevel(1);
-        }
-      
+       
     }
 
+    private void SaveData(int Version)
+    {
+        PlayerPrefs.SetFloat("A", A);
+        PlayerPrefs.SetFloat("B", B);
+        PlayerPrefs.SetFloat("X", X);
+        PlayerPrefs.SetFloat("Y", Y);
+        PlayerPrefs.SetString("User_ID", InputField_UserID.text); // Передаю во 2ю сцену Айдишник изера 
+        PlayerPrefs.SetInt("Version", Version);// и номер кнопки которую нажали
+        // ну на самом деле я слегка недопонял тз :) сделаю как понял сам 
+    }
     
 
 }
