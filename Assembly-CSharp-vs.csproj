@@ -48,6 +48,14 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Controller.cs" />
      <Compile Include="Assets\Scripts\FirstScaneController.cs" />
+     <Compile Include="Assets\SmartLocalization\Examples\LoadAllLanguages.cs" />
+     <Compile Include="Assets\SmartLocalization\Scripts\NGUI\SL_NGUILabel.cs" />
+     <Compile Include="Assets\SmartLocalization\Scripts\NGUI\SL_NGUISpriteAtlas.cs" />
+     <Compile Include="Assets\SmartLocalization\Scripts\NGUI\SL_NGUISpriteName.cs" />
+     <Compile Include="Assets\SmartLocalization\Scripts\uGUI\LocalizedText.cs" />
+     <None Include="Assets\SmartLocalization\README.txt" />
+     <None Include="Assets\SmartLocalization\Resources\EmptyResourceHeader.txt" />
+     <None Include="Assets\SmartLocalization\smartloc_licenses.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
@@ -59,6 +67,9 @@
  </Reference>
  <Reference Include="Parse.Unity">
  <HintPath>D:/Юнити/Projects/TestForMakeApps/Assets/Parse.Unity.dll</HintPath>
+ </Reference>
+ <Reference Include="SmartLocalization_Runtime">
+ <HintPath>D:/Юнити/Projects/TestForMakeApps/Assets/SmartLocalization/SmartLocalization_Runtime.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
