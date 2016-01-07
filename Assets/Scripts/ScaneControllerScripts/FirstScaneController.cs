@@ -3,31 +3,36 @@ using System.Collections;
 using System.Collections.Generic;
 using Parse;
 using UnityEngine.UI;
-using UnityEditor;
 
 public class FirstScaneController : MonoBehaviour {
 
 
-    public InputField InputField_UserID;
+    public InputField inputField_UserID;
 
     //Size from DB
     float A, B, X, Y;
-    bool flag = false, ThreadFlag=false, unThreadFlag = false;
-    //End
-    
+
+    //Thread bool flags
+    bool flag = false, threadFlag=false, unThreadFlag = false;
+
     //Button index
     int btnIndex;
-    //
     
-	// Use this for initialization
-	void Start () {
-        InputField_UserID.onEndEdit.AddListener(UserID_Listener);
+    //Audio
+    AudioSource audioSourse;
+    public AudioClip btnClickSound;
 
+
+
+	void Start () {
+      
+        audioSourse = GetComponent<AudioSource>();
+ 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (ThreadFlag && unThreadFlag)
+        if (threadFlag && unThreadFlag)
         {
             SaveData(btnIndex);
             Application.LoadLevel(1);
@@ -35,14 +40,10 @@ public class FirstScaneController : MonoBehaviour {
 
 	}
 
-    private void UserID_Listener(string arg)
-    {
-        
-    }
     public void btn_Version_Click(int Version)
     {
       
-        if (InputField_UserID.text != "")
+        if (inputField_UserID.text != "")
         {
             ParseQuery<ParseObject> query = ParseObject.GetQuery("TestObject");
            query.FindAsync().ContinueWith(t =>
@@ -50,7 +51,7 @@ public class FirstScaneController : MonoBehaviour {
                 IEnumerable<ParseObject> result = t.Result;
                 foreach (ParseObject parseObject in result)
                 {
-                    if (parseObject.Get<string>("User_ID") == InputField_UserID.text)
+                    if (parseObject.Get<string>("User_ID") == inputField_UserID.text)
                     {
                         A = parseObject.Get<float>("A");
                         B = parseObject.Get<float>("B");
@@ -64,7 +65,7 @@ public class FirstScaneController : MonoBehaviour {
                 if (!flag)
                 {
                     ParseObject testObject = new ParseObject("TestObject");  // Если объекта нет в базе , добавляем его
-                    testObject["User_ID"] = InputField_UserID.text;          // и задаем ему параментры размера фигур
+                    testObject["User_ID"] = inputField_UserID.text;          // и задаем ему параментры размера фигур
                     testObject["A"] = 1;
                     testObject["B"] = 1;
                     testObject["X"] = 1;
@@ -77,7 +78,7 @@ public class FirstScaneController : MonoBehaviour {
                     Debug.Log("Successful_ELSE");
                 }
                 
-                ThreadFlag = true;
+                threadFlag = true;
             });
 
            btnIndex = Version;
@@ -91,10 +92,16 @@ public class FirstScaneController : MonoBehaviour {
         PlayerPrefs.SetFloat("B", B);
         PlayerPrefs.SetFloat("X", X);
         PlayerPrefs.SetFloat("Y", Y);
-        PlayerPrefs.SetString("User_ID", InputField_UserID.text); // Передаю во 2ю сцену Айдишник изера 
+        PlayerPrefs.SetString("User_ID", inputField_UserID.text); // Передаю во 2ю сцену Айдишник изера 
         PlayerPrefs.SetInt("Version", Version);// и номер кнопки которую нажали
         // ну на самом деле я слегка недопонял тз :) сделаю как понял сам 
     }
     
+    // Sound 
+    public void Play_btnClickSound()
+    {
+        audioSourse.Play();
+    }
+
 
 }

@@ -6,7 +6,8 @@ using UnityEngine.UI;
 using UnityEditor;
 using System;
 using System.Threading.Tasks;
-public class Controller : MonoBehaviour {
+public class SecondScaneController : MonoBehaviour
+{
 
     // Player Prefs values
     int Version; 
